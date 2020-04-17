@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_steps"
+        android:icon="@drawable/ic_directions_run_black_24dp"
+        android:title="Steps" />
+
+    <item
+        android:id="@+id/navigation_heart"
+        android:icon="@drawable/ic_loyalty_black_24dp"
+        android:title="Heart Rate" />
+
+    <item
+        android:id="@+id/navigation_records"
+        android:icon="@drawable/ic_list_black_24dp"
+        android:title="Records" />
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_logout_black_24dp"
+        android:title="Logout"/>
+
+</menu>
