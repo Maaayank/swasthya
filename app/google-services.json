@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "916860739820",
+    "firebase_url": "https://health-0-meter.firebaseio.com",
+    "project_id": "health-0-meter",
+    "storage_bucket": "health-0-meter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916860739820:android:6c581b7087e6646db645c9",
+        "android_client_info": {
+          "package_name": "com.blackcat.health_0_meter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916860739820-k5s9jnbqla8bm6uv7th3prj86j29l70t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blackcat.health_0_meter",
+            "certificate_hash": "1f4bdd02b64130aedb5337a11c1d5f333042767b"
+          }
+        },
+        {
+          "client_id": "916860739820-ekkpt1entqb6s2o19f0itldo7hah1f9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi2NTVC9rbaFEXRB63UV2LgdMjArzZmYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916860739820-ekkpt1entqb6s2o19f0itldo7hah1f9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
