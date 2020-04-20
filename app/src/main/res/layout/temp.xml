@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NUmber of Steps"
+        android:textSize="20dp"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:id="@+id/dt"
+        android:text="replaced by distance"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/dis"
+        android:text="replaced by distance"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:id="@+id/sc"
+        android:text="This will be replaced by steps"
+        />
+
+</LinearLayout>

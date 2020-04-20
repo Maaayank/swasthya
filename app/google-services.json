@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "834735646582",
+    "firebase_url": "https://health-o-meter-6b465.firebaseio.com",
+    "project_id": "health-o-meter-6b465",
+    "storage_bucket": "health-o-meter-6b465.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834735646582:android:b7339572b9a22e6e127c57",
+        "android_client_info": {
+          "package_name": "com.example.mcan_miniproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "834735646582-1maei11qemcahf191g7cl9mtnvqn1c8s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mcan_miniproject",
+            "certificate_hash": "08eace44cd25c5a888efdfea52eea69b60134724"
+          }
+        },
+        {
+          "client_id": "834735646582-rdpb8ehk0u2qehnrn6hbnq6b6be07mn5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mcan_miniproject",
+            "certificate_hash": "1f4bdd02b64130aedb5337a11c1d5f333042767b"
+          }
+        },
+        {
+          "client_id": "834735646582-t7f5bif7bdfio78qn1138lj6m25c68lv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFoyseDUStYhRvPdYnlh9Dn84lvFlcmWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "834735646582-t7f5bif7bdfio78qn1138lj6m25c68lv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
