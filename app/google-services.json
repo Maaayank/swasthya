@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "916860739820-2bq2esov7q7k6f38sqda2g4uf10ugfaa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blackcat.health_0_meter",
+            "certificate_hash": "931562f14dc29d570b312ea5f234b6dfb6a8debf"
+          }
+        },
+        {
           "client_id": "916860739820-k5s9jnbqla8bm6uv7th3prj86j29l70t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
