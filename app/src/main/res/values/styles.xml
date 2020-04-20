@@ -10,4 +10,10 @@
         <item name="android:fontFamily">serif-monospace</item>
     </style>
 
+    <style name="MyToolbarTheme"
+        parent="@style/AppTheme">
+        <item name="colorControlNormal">@color/color2</item>
+        <item name="titleTextColor">@color/color2</item>
+    </style>
+
 </resources>

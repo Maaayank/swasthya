@@ -1,10 +1,13 @@
 package com.blackcat.health_0_meter.Fragments;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.hardware.Camera;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +32,13 @@ import androidx.fragment.app.Fragment;
 
 import com.blackcat.health_0_meter.HelperClasses.ImageProcessing;
 import com.blackcat.health_0_meter.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HeartRateFragment extends Fragment {
 
@@ -58,7 +69,10 @@ public class HeartRateFragment extends Fragment {
     private static double beats = 0;
     private static long startTime = 0;
 
-
+    private FirebaseDatabase mdb ;
+    private static DatabaseReference heartrate_ref ;
+    private SharedPreferences user ;
+    private static Context context;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -79,6 +93,13 @@ public class HeartRateFragment extends Fragment {
             res = view.findViewById(R.id.bmpRes);
             start = view.findViewById(R.id.startButton);
             status = view.findViewById(R.id.status);
+
+            context = getContext();
+            user  = getActivity().getSharedPreferences("user",Context.MODE_PRIVATE);
+
+            String address = user.getString("address","");
+            mdb = FirebaseDatabase.getInstance();
+            heartrate_ref = mdb.getReference(address).child("heartratestats");
 
             PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
             wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "DoNotDimScreen");
@@ -111,10 +132,7 @@ public class HeartRateFragment extends Fragment {
                 }
             });
 
-
     }
-
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -141,6 +159,22 @@ public class HeartRateFragment extends Fragment {
         camera.stopPreview();
         camera.release();
         camera = null;
+    }
+
+    private static void logMonitoredRate(int rate){
+
+        final String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        final String time = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
+        heartrate_ref.child(date).child(time).setValue(rate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(context,"Monitored Rate Logged ",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(context,"Please Check your Internet Connection  , Couldn't log Rate ",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private static PreviewCallback previewCallback = new PreviewCallback() {

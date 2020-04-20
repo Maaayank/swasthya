@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Health-O-Meter</string>
     <string name="steps">%1$d</string>
+    <string name="steps1">Steps: %1$d</string>
     <string name="time">Time: %1$s</string>
     <string name="speed">Average speed: %1$d steps/min</string>
     <string name="distance">Distance: %1$s m</string>

@@ -176,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             Map<String,Object> upload = new HashMap<>();
             upload.put("email",email);
             upload.put("name",name);
-            dataRef.child("users").child(uid).child("profile").updateChildren(upload).addOnFailureListener(new OnFailureListener() {
+            dataRef.child("users").child(uid).child("profile").setValue(upload).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.d("healtherror","adding failed : " + e.getMessage());

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -52,6 +53,8 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
     //Variables used in calculations
     private int stepCount = 0;
+    private int lastSteps = 0;
+    private double lastDistance = 0;
     private int prevStepCount = 0;
     private long stepTimestamp = 0;
     private long startTime = 0;
@@ -67,9 +70,12 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     private TextView orientationText;
     private TextView distanceText;
     private TextView speedText;
+    private TextView stepText1;
+    private TextView timeText1;
+    private TextView distanceText1;
+    private TextView speedText1;
     private TextView notices ;
     private Button startButton;
-    private Button stopButton;
 
     private boolean active = false;
     private Handler handler = new Handler();
@@ -111,11 +117,14 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         timeText = (TextView) view.findViewById(R.id.timeText);
         speedText = (TextView) view.findViewById(R.id.speedText);
         distanceText = (TextView) view.findViewById(R.id.distanceText);
+        stepText1 = (TextView) view.findViewById(R.id.stepText1);
+        timeText1 = (TextView) view.findViewById(R.id.timeText1);
+        speedText1 = (TextView) view.findViewById(R.id.speedText1);
+        distanceText1 = (TextView) view.findViewById(R.id.distanceText1);
         orientationText = (TextView) view.findViewById(R.id.orientationText);
         notices = (TextView)view.findViewById(R.id.accuracy_alert);
         startButton = view.findViewById(R.id.startButton);
-        stopButton = view.findViewById(R.id.persistrecord);
-
+        startButton.setEnabled(false);
         user = getActivity().getSharedPreferences("user",Context.MODE_PRIVATE);
 
         mdb = FirebaseDatabase.getInstance();
@@ -139,9 +148,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
                 @Override
                 public void onClick(View v) {
                     if (!active) {
-                        startButton.setText("Pause");
-                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color1));
-                        startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color2));
+                        startButton.setText("Stop");
                         registerSensors();
                         notices.setText(" The sensor has a Latency of 10 seconds . ");
                         startTime = SystemClock.uptimeMillis();
@@ -150,11 +157,13 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
                     } else {
                         startButton.setText("Start!");
-                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color4));
-                        startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color1));
+                        startButton.setEnabled(false);
+//                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color4));
+//                        startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color1));
                         unregisterSensors();
                         checkSensors();
                         elapsedTime += timeInMilliseconds;
+                        persistSteps();
                         handler.removeCallbacks(timerRunnable);
                         active = false;
                     }
@@ -176,33 +185,18 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(active)
-                    startButton.performClick();
                 stepCount = 0;
                 distance = 0;
                 elapsedTime = 0;
                 startTime = 0;
+                startButton.setText("Start!");
+                unregisterSensors();
+                checkSensors();
+                handler.removeCallbacks(timerRunnable);
+                active = false;
                 setViewDefaultValues();
             }
         });
-
-
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(startTime == 0 ){
-                    Snackbar.make(view,"You don't seem motivated , Atleast take a walk before stopping . ",Snackbar.LENGTH_LONG).show();
-                }else{
-                    if(active){
-                        startButton.performClick();
-                    }
-                    Snackbar.make(view,"Updating database , please make sure you have an Active Internet Connection . ",Snackbar.LENGTH_LONG).show();
-                    persistSteps();
-                }
-            }
-        });
-
-        
     }
 
     @Override
@@ -330,15 +324,14 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
         //Step count
         stepCount += step;
-        stepText.setText(String.format(getResources().getString(R.string.steps), stepCount));
+        stepText.setText(String.format(getResources().getString(R.string.steps), lastSteps + stepCount));
 
         //Distance calculation
         distance = stepCount * 0.8; //Average step length in an average adult
-        String distanceString = String.format("%.2f", distance);
+        String distanceString = String.format("%.2f",lastDistance + distance);
         distanceText.setText(String.format(getResources().getString(R.string.distance), distanceString));
 
     }
-
 
     //Calculated the amount of steps taken per minute at the current rate
     private void calculateSpeed(long eventTimeStamp, int steps) {
@@ -394,36 +387,70 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
         final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
 
-        step_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        step_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child(timestamp).exists()){
+                    startButton.setEnabled(true);
                     Steps stepstat = dataSnapshot.child(timestamp).getValue(Steps.class);
+
+                    lastDistance = stepstat.getDistance();
+                    elapsedTime = stepstat.getDuration();
+                    lastSteps = (int) stepstat.getSteps();
+                    stepCount = 0;
+                    distance = 0;
+                    startTime = 0;
+                    int seconds = (int) (stepstat.getDuration()/ 1000);
+                    int minutes = seconds / 60;
+                    int hours = minutes / 60;
+                    seconds = seconds % 60;
+                    minutes = minutes % 60;
+
+                    String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
+                    stepText1.setText(String.format(getResources().getString(R.string.steps1), stepstat.getSteps()));
+                    timeText1.setText(String.format(getResources().getString(R.string.time),timeString ));
+                    speedText1.setText(String.format(getResources().getString(R.string.speed),(int)((stepstat.getDistance()*60000)/stepstat.getDuration())));
+                    distanceText1.setText(String.format(getResources().getString(R.string.distance),String.format("%.2f",stepstat.getDistance())));
+
+                    stepText.setText(String.format(getResources().getString(R.string.steps), 0));
+                    timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
+                    speedText.setText(String.format(getResources().getString(R.string.speed), 0));
+                    distanceText.setText(String.format(getResources().getString(R.string.distance),"0"));
+                    orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
+
                     Log.d("healtherror","responsed");
+
                 }else{
+                    startButton.setEnabled(true);
                     Log.d("healtherror","inelse");
+                    elapsedTime = 0;
+                    lastSteps = 0;
+                    stepText1.setText(String.format(getResources().getString(R.string.steps1), 0));
+                    timeText1.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
+                    speedText1.setText(String.format(getResources().getString(R.string.speed), 0));
+                    distanceText1.setText(String.format(getResources().getString(R.string.distance),"0"));
+
+                    stepText.setText(String.format(getResources().getString(R.string.steps), 0));
+                    timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
+                    speedText.setText(String.format(getResources().getString(R.string.speed), 0));
+                    distanceText.setText(String.format(getResources().getString(R.string.distance),"0"));
+                    orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d("healtherror",databaseError.getMessage());
+                Toast.makeText(getActivity(),"Some Error in fetching Previous Records ",Toast.LENGTH_LONG).show();
             }
         });
-
-
-        stepText.setText(String.format(getResources().getString(R.string.steps), 0));
-        timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-        speedText.setText(String.format(getResources().getString(R.string.speed), 0));
-        distanceText.setText(String.format(getResources().getString(R.string.distance),"0"));
-        orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
 
     }
 
     private void persistSteps(){
 
         final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        Steps steps = new Steps(stepCount,elapsedTime,distance);
+        Steps steps = new Steps(stepCount + lastSteps,elapsedTime,(stepCount + lastSteps)*0.8,timestamp);
         step_ref.child(timestamp).setValue(steps).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

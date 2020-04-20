@@ -5,11 +5,13 @@ public class Steps {
     private long steps;
     private long duration;
     private double distance;
+    private String date ;
 
-    public Steps(long steps, long duration, double distance) {
+    public Steps(long steps, long duration, double distance , String date) {
         this.steps = steps;
         this.duration = duration;
         this.distance = distance;
+        this.date = date;
     }
 
     public Steps(){
@@ -36,7 +38,15 @@ public class Steps {
         return distance;
     }
 
-    public void setDistance(long distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
