@@ -326,7 +326,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         //Step count
         stepCount += step;
         final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        if(stepCount+lastSteps>dayStepRecord&&user.getBoolean(tp+"_step",true))
+        if(stepCount+lastSteps > dayStepRecord && user.getBoolean(tp+"_step",true))
         {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
             builder1.setTitle("Congratulations");
@@ -335,9 +335,10 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
             alertDialog.show();
             user.edit().putBoolean(tp+"_step",false).apply();
         }
+
+
         stepText.setText(String.format(getResources().getString(R.string.steps), lastSteps + stepCount));
 
-        //todo yaha pe dal if  stepcount > goal  to display  ,
         //Distance calculation
         distance = stepCount * 0.8; //Average step length in an average adult
         String distanceString = String.format("%.2f",lastDistance + distance);

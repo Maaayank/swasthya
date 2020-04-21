@@ -79,7 +79,7 @@
                 android:textStyle="bold"
                 tools:text="0"
                 android:textColor="@color/color2"
-                android:background="@color/color1"
+                android:background="@color/color4"
                 android:textSize="60sp" />
 
             <TextView
@@ -146,9 +146,7 @@
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:paddingLeft="10dp"/>
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -166,9 +164,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="Previous session "
-                    android:textColor="@color/color2"
+                    android:textColor="@color/color1"
                     android:textStyle="bold"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     />
 
                 <TextView
@@ -211,32 +209,33 @@
                     android:textStyle="bold"
                     android:textSize="20sp" />
             </LinearLayout>
-            <Button
-                android:id="@+id/resetButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:background="@color/color2"
-                android:textStyle="bold"
-                android:text="Reset"
-                android:textAllCaps="false"
-                android:textColor="@color/color1" />
 
-            <Button
-                android:id="@+id/startButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:text="Start"
-                android:textAllCaps="false"
-                android:textStyle="bold"
-                android:background="@color/color2"
-                android:textColor="@color/color1"
-                android:layout_alignParentEnd="true"/>
-            </ScrollView>
 
         </RelativeLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/color2"
+        android:textStyle="bold"
+        android:text="Reset"
+        android:textAllCaps="false"
+        android:textColor="@color/color1" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Start"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:background="@color/color2"
+        android:textColor="@color/color1"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

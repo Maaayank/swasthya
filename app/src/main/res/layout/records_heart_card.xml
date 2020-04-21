@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:elevation="5dp"
+    app:cardElevation="10dp"
+    app:cardBackgroundColor="@color/color3"
     app:cardCornerRadius="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -21,7 +22,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@color/color3"
             android:layout_marginBottom="3dp"
             >
 

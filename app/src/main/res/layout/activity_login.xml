@@ -24,7 +24,14 @@
             android:orientation="horizontal"
             android:paddingHorizontal="20dp">
 
-
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="20dp"
+                android:src="@drawable/logo" />
 
             <TextView
                 android:layout_width="0dp"
@@ -72,14 +79,6 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="10dp"
-            android:src="@drawable/red_icon" />
     </LinearLayout>
 
     <TextView
