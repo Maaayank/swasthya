@@ -32,11 +32,16 @@ public class RecordsStepsAdapter extends RecyclerView.Adapter<RecordsStepsAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position)
     {
         Steps ld = steps_arr.get(position);
+        int seconds=(int)(ld.getDuration()/1000);
+        int minutes = seconds/60;
+        int hours = minutes/60;
+        seconds=seconds%60;
+        minutes=minutes%60;
+        String timeString = String.format("%d:%s:%s",hours,String.format("%02d",minutes),String.format("%02d",seconds));
         holder.steps.setText(ld.getSteps()+"");
         holder.distance.setText(ld.getDistance()+"");
         holder.date.setText(ld.getDate() + "");
-
-        //todo duration in steps recycler tomorrow
+        holder.duration.setText(timeString);
     }
 
     @Override
@@ -46,13 +51,14 @@ public class RecordsStepsAdapter extends RecyclerView.Adapter<RecordsStepsAdapte
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView steps,distance,date;
+        private TextView steps,distance,date,duration;
         public MyViewHolder(@NonNull View itemView)
         {
             super(itemView);
             steps = (TextView) itemView.findViewById(R.id.step);
             distance = (TextView) itemView.findViewById(R.id.distance);
             date = (TextView) itemView.findViewById(R.id.date);
+            duration = (TextView) itemView.findViewById(R.id.duration);
         }
     }
 }

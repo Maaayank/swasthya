@@ -6,10 +6,13 @@
     <color name="lightGray">#DED9D9</color>
     <color name="darkGray">#FF868687</color>
 
-    <color name="color1">#425c5a</color>
-    <color name="color2">#a2bfbd</color>
-    <color name="color3">#ffcea2</color>
+    <color name="color1">#ffffff</color>
+    <color name="color2">#195772</color>
+    <color name="color3">#2b91bf</color>
     <color name="color4">#ffffff</color>
     <color name="color5">#E40B0B</color>
     <color name="color6">#38231A</color>
+    <color name="ecolor1">#425c5a</color>
+    <color name="ecolor2">#a2bfbd</color>
+    <color name="ecolor3">#ffcea2</color>
 </resources>

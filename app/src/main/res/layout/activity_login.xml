@@ -25,23 +25,15 @@
             android:paddingHorizontal="20dp">
 
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:src="@drawable/red_icon" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="HEALTH-O-METER"
-                android:textColor="@color/color2"
-                android:textSize="30dp"
+                android:text="@string/app_name"
+                android:textColor="@color/color3"
+                android:textSize="40dp"
                 android:textStyle="bold" />
 
 
@@ -63,7 +55,9 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:src="@drawable/google_logo" />
+                android:background="@color/color3"
+                android:src="@drawable/google_logo"
+                />
 
             <TextView
                 android:layout_width="0dp"
@@ -74,8 +68,18 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:text="SIGN IN WITH GOOGLE" />
+
+
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/red_icon" />
     </LinearLayout>
 
     <TextView
@@ -83,7 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:gravity="center"
-        android:text=" need to write down something here just for the  sake of somedbbdnfj  someting"
+        android:text="@string/message_sign_in"
         android:textColor="@color/color2"
         android:textStyle="italic"
         android:layout_marginBottom="20dp"
