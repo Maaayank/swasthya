@@ -127,7 +127,6 @@ public class HeartRateFragment extends Fragment {
                         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                         camera.setParameters(parameters);
                         camera.stopPreview();
-                        preview.invalidate();
                     }
                 }
             });
@@ -165,16 +164,21 @@ public class HeartRateFragment extends Fragment {
 
         final String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         final String time = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
-        heartrate_ref.child(date).child(time).setValue(rate).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(context,"Monitored Rate Logged ",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(context,"Please Check your Internet Connection  , Couldn't log Rate ",Toast.LENGTH_LONG).show();
+
+        try {
+            heartrate_ref.child(date).child(time).setValue(rate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(context, "Monitored Rate Logged ", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "Please Check your Internet Connection  , Couldn't log Rate ", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+
+        }
     }
 
     private static PreviewCallback previewCallback = new PreviewCallback() {
@@ -256,13 +260,8 @@ public class HeartRateFragment extends Fragment {
                 int beatsAvg = ((beatsArrayAvg) / beatsArrayCnt);
                 Log.d("bpm","" + beatsArrayAvg/beatsArrayCnt + "   : " + beatsAvg);
                 res.setText("" + beatsAvg);
-                status.setText("Heart Rate Measured ");
-                start.setText("START");
-                Camera.Parameters parameters = camera.getParameters();
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                camera.setParameters(parameters);
-                camera.stopPreview();
-
+                logMonitoredRate(beatsAvg);
+                start.performClick();
             }
             processing.set(false);
         }

@@ -56,50 +56,53 @@ public class RecordsHeartChild extends Fragment
         mdb = FirebaseDatabase.getInstance();
         data_ref = mdb.getReference(address).child("heartratestats");
 //        Log.e(TAG , "date:"+s);
-        data_ref.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren())
-                {
-                    final String key = dataSnapshot1.getKey();
-                    data_ref.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for(DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()){
 
-                                Log.d("heartattack","key" + key);
-                                Heart heart = new Heart();
-                                int rate  = dataSnapshot2.getValue(Integer.class);
-                                Log.d("heartattack","rate" + rate);
-                                heart.setDate(key);
-                                heart.setRate(rate);
-                                String time = dataSnapshot2.getKey();
-                                Log.d("heartattack","time" + time);
-                                heart.setTimestamp(time);
-                                list.add(heart);
-                            }
+        try {
+            data_ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        try {
+                            final String key = dataSnapshot1.getKey();
+                            data_ref.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
 
-                            adapter = new RecordsHeartAdapter(list);
-                            recyclerView.setAdapter(adapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                        Log.d("heartattack", "key" + key);
+                                        Heart heart = new Heart();
+                                        int rate = dataSnapshot2.getValue(Integer.class);
+                                        Log.d("heartattack", "rate" + rate);
+                                        heart.setDate(key);
+                                        heart.setRate(rate);
+                                        String time = dataSnapshot2.getKey();
+                                        Log.d("heartattack", "time" + time);
+                                        heart.setTimestamp(time);
+                                        list.add(heart);
+                                    }
+
+                                    adapter = new RecordsHeartAdapter(list);
+                                    recyclerView.setAdapter(adapter);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }catch (Exception e){
+
                         }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
+            });
+        }catch (Exception e){
 
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
-
-            }
-        });
+        }
     }
 }

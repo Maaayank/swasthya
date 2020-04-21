@@ -5,7 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,9 +36,19 @@ public class RecordsStepsAdapter extends RecyclerView.Adapter<RecordsStepsAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position)
     {
         Steps ld = steps_arr.get(position);
+
+        int seconds = (int) (ld.getDuration() / 1000);
+        int minutes = seconds / 60;
+        int hours = minutes / 60;
+        seconds = seconds % 60;
+        minutes = minutes % 60;
+
+        String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
+
         holder.steps.setText(ld.getSteps()+"");
         holder.distance.setText(ld.getDistance()+"");
         holder.date.setText(ld.getDate() + "");
+        holder.duration.setText(timeString);
 
         //todo duration in steps recycler tomorrow
     }
@@ -46,13 +60,14 @@ public class RecordsStepsAdapter extends RecyclerView.Adapter<RecordsStepsAdapte
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView steps,distance,date;
+        private TextView steps,distance,date,duration;
         public MyViewHolder(@NonNull View itemView)
         {
             super(itemView);
             steps = (TextView) itemView.findViewById(R.id.step);
             distance = (TextView) itemView.findViewById(R.id.distance);
             date = (TextView) itemView.findViewById(R.id.date);
+            duration = (TextView) itemView.findViewById(R.id.duration);
         }
     }
 }

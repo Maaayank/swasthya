@@ -326,6 +326,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         stepCount += step;
         stepText.setText(String.format(getResources().getString(R.string.steps), lastSteps + stepCount));
 
+        //todo yaha pe dal if  stepcount > goal  to display  ,
         //Distance calculation
         distance = stepCount * 0.8; //Average step length in an average adult
         String distanceString = String.format("%.2f",lastDistance + distance);
@@ -387,76 +388,89 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
         final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
 
-        step_ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(timestamp).exists()){
-                    startButton.setEnabled(true);
-                    Steps stepstat = dataSnapshot.child(timestamp).getValue(Steps.class);
+        try {
+            step_ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    lastDistance = stepstat.getDistance();
-                    elapsedTime = stepstat.getDuration();
-                    lastSteps = (int) stepstat.getSteps();
-                    stepCount = 0;
-                    distance = 0;
-                    startTime = 0;
-                    int seconds = (int) (stepstat.getDuration()/ 1000);
-                    int minutes = seconds / 60;
-                    int hours = minutes / 60;
-                    seconds = seconds % 60;
-                    minutes = minutes % 60;
+                    try {
+                        if (dataSnapshot.child(timestamp).exists()) {
+                            startButton.setEnabled(true);
+                            Steps stepstat = dataSnapshot.child(timestamp).getValue(Steps.class);
 
-                    String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
-                    stepText1.setText(String.format(getResources().getString(R.string.steps1), stepstat.getSteps()));
-                    timeText1.setText(String.format(getResources().getString(R.string.time),timeString ));
-                    speedText1.setText(String.format(getResources().getString(R.string.speed),(int)((stepstat.getDistance()*60000)/stepstat.getDuration())));
-                    distanceText1.setText(String.format(getResources().getString(R.string.distance),String.format("%.2f",stepstat.getDistance())));
+                            lastDistance = stepstat.getDistance();
+                            elapsedTime = stepstat.getDuration();
+                            lastSteps = (int) stepstat.getSteps();
+                            stepCount = 0;
+                            distance = 0;
+                            startTime = 0;
+                            int seconds = (int) (stepstat.getDuration() / 1000);
+                            int minutes = seconds / 60;
+                            int hours = minutes / 60;
+                            seconds = seconds % 60;
+                            minutes = minutes % 60;
 
-                    stepText.setText(String.format(getResources().getString(R.string.steps), 0));
-                    timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-                    speedText.setText(String.format(getResources().getString(R.string.speed), 0));
-                    distanceText.setText(String.format(getResources().getString(R.string.distance),"0"));
-                    orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
+                            String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
+                            stepText1.setText(String.format(getResources().getString(R.string.steps1), stepstat.getSteps()));
+                            timeText1.setText(String.format(getResources().getString(R.string.time), timeString));
+                            speedText1.setText(String.format(getResources().getString(R.string.speed), (int) ((stepstat.getDistance() * 60000) / stepstat.getDuration())));
+                            distanceText1.setText(String.format(getResources().getString(R.string.distance), String.format("%.2f", stepstat.getDistance())));
 
-                    Log.d("healtherror","responsed");
+                            stepText.setText(String.format(getResources().getString(R.string.steps), 0));
+                            timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
+                            speedText.setText(String.format(getResources().getString(R.string.speed), 0));
+                            distanceText.setText(String.format(getResources().getString(R.string.distance), "0"));
+                            orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
 
-                }else{
-                    startButton.setEnabled(true);
-                    Log.d("healtherror","inelse");
-                    elapsedTime = 0;
-                    lastSteps = 0;
-                    stepText1.setText(String.format(getResources().getString(R.string.steps1), 0));
-                    timeText1.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-                    speedText1.setText(String.format(getResources().getString(R.string.speed), 0));
-                    distanceText1.setText(String.format(getResources().getString(R.string.distance),"0"));
+                            Log.d("healtherror", "responsed");
 
-                    stepText.setText(String.format(getResources().getString(R.string.steps), 0));
-                    timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-                    speedText.setText(String.format(getResources().getString(R.string.speed), 0));
-                    distanceText.setText(String.format(getResources().getString(R.string.distance),"0"));
-                    orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
+                        } else {
+                            startButton.setEnabled(true);
+                            Log.d("healtherror", "inelse");
+                            elapsedTime = 0;
+                            lastSteps = 0;
+                            stepText1.setText(String.format(getResources().getString(R.string.steps1), 0));
+                            timeText1.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
+                            speedText1.setText(String.format(getResources().getString(R.string.speed), 0));
+                            distanceText1.setText(String.format(getResources().getString(R.string.distance), "0"));
+
+                            stepText.setText(String.format(getResources().getString(R.string.steps), 0));
+                            timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
+                            speedText.setText(String.format(getResources().getString(R.string.speed), 0));
+                            distanceText.setText(String.format(getResources().getString(R.string.distance), "0"));
+                            orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
+                        }
+                    }catch(Exception e){
+
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("healtherror",databaseError.getMessage());
-                Toast.makeText(getActivity(),"Some Error in fetching Previous Records ",Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d("healtherror", databaseError.getMessage());
+                    Toast.makeText(getActivity(), "Some Error in fetching Previous Records ", Toast.LENGTH_LONG).show();
+                }
+            });
+        }catch (Exception e){
+
+        }
 
     }
 
     private void persistSteps(){
 
-        final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        Steps steps = new Steps(stepCount + lastSteps,elapsedTime,(stepCount + lastSteps)*0.8,timestamp);
-        step_ref.child(timestamp).setValue(steps).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("healtherror",e.getMessage());
-            }
-        });
+        try {
+            final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+            Steps steps = new Steps(stepCount + lastSteps, elapsedTime, (stepCount + lastSteps) * 0.8, timestamp);
+            step_ref.child(timestamp).setValue(steps).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("healtherror", e.getMessage());
+                }
+            });
+        }catch (Exception e){
+
+        }
     }
 
     public void showDialog()

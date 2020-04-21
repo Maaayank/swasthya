@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class ProfileFragment extends Fragment {
 
@@ -32,15 +34,17 @@ public class ProfileFragment extends Fragment {
     GoogleSignInClient mGoogleSignInClient;
     FirebaseAuth mAuth;
     FirebaseDatabase mdb;
+    SharedPreferences user ;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mAuth = FirebaseAuth.getInstance();
         mdb = FirebaseDatabase.getInstance();
+        user = getActivity().getSharedPreferences("user",MODE_PRIVATE);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("916860739820-ekkpt1entqb6s2o19f0itldo7hah1f9m.apps.googleusercontent.com")
                 .requestEmail()
@@ -66,12 +70,15 @@ public class ProfileFragment extends Fragment {
         name = view.findViewById(R.id.name);
         profile = view.findViewById(R.id.profile);
 
-
         if(mAuth.getCurrentUser().getPhotoUrl() != null && !mAuth.getCurrentUser().getPhotoUrl().toString().isEmpty())
             Glide.with(getActivity()).asBitmap().load(mAuth.getCurrentUser().getPhotoUrl()).circleCrop().into(profile);
 
         email.setText(mAuth.getCurrentUser().getEmail());
         name.setText(mAuth.getCurrentUser().getDisplayName());
+
+        //todo average steps fetched here usko display karna hai
+        float averageSteps = user.getFloat("averageSteps",0);
+
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

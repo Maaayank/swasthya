@@ -49,8 +49,8 @@ public class RecordsFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
         adapter = new TabAdapter(getChildFragmentManager());
-        adapter.addFragment(new RecordsHeartChild(), "Heart Record");
         adapter.addFragment(new RecordStepChild(), "Steps Record");
+        adapter.addFragment(new RecordsHeartChild(), "Heart Record");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 

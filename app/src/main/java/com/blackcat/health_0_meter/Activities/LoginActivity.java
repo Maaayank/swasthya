@@ -55,28 +55,6 @@ public class LoginActivity extends AppCompatActivity {
         mdb = FirebaseDatabase.getInstance();
         dataRef = mdb.getReference();
 
-        dataRef.child("dumroo").setValue("tutgaye").addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
-            }
-        })
-        .addOnCanceledListener(new OnCanceledListener() {
-            @Override
-            public void onCanceled() {
-                Toast.makeText(LoginActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-
 
         mAuth =  FirebaseAuth.getInstance();
         login = findViewById(R.id.userLogin);
@@ -135,24 +113,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
 
                             final FirebaseUser user = mAuth.getCurrentUser();
-//                            dataRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                    try{
-//                                        if(!dataSnapshot.child(mAuth.getUid()).exists()){
-//                                            addData(user.getUid(),user.getEmail(),user.getDisplayName());
-//                                        }
-//                                    }catch (Exception e){
-//
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                }
-//                            });
-
                             addData(user.getUid(),user.getEmail(),user.getDisplayName());
 
                             startActivity(new Intent(LoginActivity.this,HomeScreenActivity.class));

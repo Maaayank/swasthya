@@ -2,7 +2,6 @@ package com.blackcat.health_0_meter.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class RecordStepChild extends Fragment
 {
 
@@ -63,33 +56,44 @@ public class RecordStepChild extends Fragment
         recyclerView = view.findViewById(R.id.RecordsRecycler);
 
         user = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+
         String address = user.getString("address","");
 
         reference = FirebaseDatabase.getInstance().getReference(address).child("stepstat");
 
-        reference.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren())
-                {
-                    Steps step = dataSnapshot1.getValue(Steps.class);
-                    String date = dataSnapshot1.getKey();
-                    step.setDate(date);
-                    list.add(step);
+        try {
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    try {
+                        float averageSteps = 0;
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                            Steps step = dataSnapshot1.getValue(Steps.class);
+                            String date = dataSnapshot1.getKey();
+                            step.setDate(date);
+                            averageSteps = averageSteps + step.getSteps();
+                            list.add(step);
+                        }
+
+                        averageSteps = averageSteps / list.size();
+                        user.edit().putFloat("averageSteps", averageSteps).apply();
+                        adapter = new RecordsStepsAdapter(list);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }catch (Exception e){
+
+                    }
                 }
-                adapter = new RecordsStepsAdapter(list);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
 
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
+        }catch (Exception e){
+
+        }
 
     }
 
