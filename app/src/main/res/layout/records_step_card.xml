@@ -3,59 +3,98 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:layout_marginTop="25dp"
     android:elevation="5dp"
     app:cardCornerRadius="10dp"
+    android:background="@color/bg"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="2dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@color/color3"
+            android:layout_marginBottom="3dp">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_directions_run_black_24dp"/>
             <!-- Title, secondary and supporting text -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Date : "
+                    android:textSize="25sp"
+                    android:textColor="@color/color1"
+
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:textColor="@color/color1"
+                    android:id="@+id/date"
+                    android:text="replaced by date"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
-                android:textSize="20dp"
+                android:text="Steps : "
+                android:textSize="25sp"
+                android:textColor="@color/color1"
+
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:id="@+id/date"
-                android:text="replaced by date"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Steps"
-                android:textSize="20dp"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:textSize="25sp"
+                android:textColor="@color/color1"
                 android:id="@+id/step"
                 android:text="replaced by steps"
                 />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Distance"
-                android:textSize="20dp"
+                android:text="Distance: "
+                android:textSize="25sp"
+                android:textColor="@color/color1"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:text="replaced by distance"
+                android:textSize="25sp"
+                android:textColor="@color/color1"
                 android:id="@+id/distance"
                 />
             <TextView
@@ -73,7 +112,29 @@
                 />
 
         </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Duration: "
+                    android:textSize="25sp"
+                    android:textColor="@color/color1"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="replaced by duration"
+                    android:textSize="25sp"
+                    android:textColor="@color/color1"
+                    android:id="@+id/duration"
+                    />
+            </LinearLayout>
 
     </LinearLayout>
 
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

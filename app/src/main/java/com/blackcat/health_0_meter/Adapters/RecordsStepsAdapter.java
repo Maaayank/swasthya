@@ -45,12 +45,12 @@ public class RecordsStepsAdapter extends RecyclerView.Adapter<RecordsStepsAdapte
 
         String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
 
+
         holder.steps.setText(ld.getSteps()+"");
         holder.distance.setText(ld.getDistance()+"");
         holder.date.setText(ld.getDate() + "");
         holder.duration.setText(timeString);
 
-        //todo duration in steps recycler tomorrow
     }
 
     @Override

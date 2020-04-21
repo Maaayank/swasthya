@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Health-O-Meter</string>
+    <string name="app_name">SWASTHYA</string>
     <string name="steps">%1$d</string>
     <string name="steps1">Steps: %1$d</string>
     <string name="time">Time: %1$s</string>
@@ -11,9 +11,11 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
+    <string name="message_sign_in">Run for your Life ...\n ....Walk for your Heart</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="instructions">Place your finger gently on the back of the camera overlapping the flashlight .\n\n DO NOT PRESS , It might break the blood flow . \n\n Try to keep the finger still as possible . \n\n Press START to start monitoring .</string>
 </resources>
