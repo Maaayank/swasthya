@@ -18,17 +18,7 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Activities/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Activities/LoginActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Adapters/RecordsStepsAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Adapters/RecordsStepsAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/ProfileFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/ProfileFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordStepChild.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordStepChild.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordsFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordsHeartChild.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordsHeartChild.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/StepsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/StepsFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_records.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_records.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_steps.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_steps.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/records_step_card.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/records_step_card.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,10 +73,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/StepsFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1149">
+            <state relative-caret-position="177">
               <caret line="406" column="28" selection-start-line="406" selection-start-column="28" selection-end-line="413" selection-end-column="28" />
               <folding>
                 <element signature="e#16003#16044#0" expanded="true" />
@@ -180,11 +170,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="165" selection-start-line="165" selection-end-line="166" />
+            <state relative-caret-position="333">
+              <caret line="269" column="13" selection-start-line="269" selection-start-column="13" selection-end-line="269" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -253,9 +243,9 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordStepChild.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/RecordsHeartChild.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_steps.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/records_step_card.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Adapters/RecordsStepsAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java" />
       </list>
     </option>
   </component>
@@ -765,22 +755,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="165" selection-start-line="165" selection-end-line="166" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/StepsFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1149">
+        <state relative-caret-position="177">
           <caret line="406" column="28" selection-start-line="406" selection-start-column="28" selection-end-line="413" selection-end-column="28" />
           <folding>
             <element signature="e#16003#16044#0" expanded="true" />
             <element signature="e#19229#19432#0" expanded="true" />
             <element signature="e#19431#19432#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/blackcat/health_0_meter/Fragments/HeartRateFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="269" column="13" selection-start-line="269" selection-start-column="13" selection-end-line="269" selection-end-column="13" />
         </state>
       </provider>
     </entry>

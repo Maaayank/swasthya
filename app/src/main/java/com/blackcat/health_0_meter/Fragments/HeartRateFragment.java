@@ -261,7 +261,12 @@ public class HeartRateFragment extends Fragment {
                 Log.d("bpm","" + beatsArrayAvg/beatsArrayCnt + "   : " + beatsAvg);
                 res.setText("" + beatsAvg);
                 logMonitoredRate(beatsAvg);
-                start.performClick();
+                start.setText("START");
+                status.setText("Monitor Heart Rate");
+                Camera.Parameters parameters = camera.getParameters();
+                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                camera.setParameters(parameters);
+                camera.stopPreview();
             }
             processing.set(false);
         }
