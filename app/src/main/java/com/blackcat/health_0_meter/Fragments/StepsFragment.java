@@ -154,12 +154,13 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
                         startTime = SystemClock.uptimeMillis();
                         handler.postDelayed(timerRunnable, 0);
                         active = true;
-
+                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.color1));
+                        startButton.setTextColor(ContextCompat.getColor(getActivity(),R.color.color2));
                     } else {
                         startButton.setText("Start!");
                         startButton.setEnabled(false);
-//                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color4));
-//                        startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color1));
+                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color2));
+                        startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color1));
                         unregisterSensors();
                         checkSensors();
                         elapsedTime += timeInMilliseconds;
@@ -324,6 +325,16 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
         //Step count
         stepCount += step;
+        final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        if(stepCount+lastSteps>dayStepRecord&&user.getBoolean(tp+"_step",true))
+        {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+            builder1.setTitle("Congratulations");
+            builder1.setMessage("Goal Achieved");
+            AlertDialog alertDialog=builder1.create();
+            alertDialog.show();
+            user.edit().putBoolean(tp+"_step",false).apply();
+        }
         stepText.setText(String.format(getResources().getString(R.string.steps), lastSteps + stepCount));
 
         //Distance calculation
