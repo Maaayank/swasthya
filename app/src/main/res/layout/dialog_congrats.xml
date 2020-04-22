@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/bg">
+
+        <ImageView
+            android:id="@+id/closePopUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_gravity="end"
+            android:src="@drawable/close"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/screenshotlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="25dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textSize="25dp"
+                    android:maxLines="1"
+                    android:textColor="@color/color2"
+                    android:text="Congratulations !! "/>
+
+                <ImageView
+                    android:id="@+id/trophypic"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:src="@drawable/trophy" />
+
+                <TextView
+                    android:id="@+id/goalReached"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textSize="24sp"
+                    android:textColor="@color/color2"
+                    android:text="Goal Reached !!\n Keep it up !"/>
+
+                <TextView
+                    android:id="@+id/goalSteps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textSize="33sp"
+                    android:textColor="@color/color3"
+                    android:text="Number of steps" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/sharebutton"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Share"
+                android:elevation="10dp"
+                android:textColor="@color/color1"
+                android:background="@drawable/round_solid_blue"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>

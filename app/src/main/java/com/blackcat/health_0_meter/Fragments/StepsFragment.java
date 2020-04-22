@@ -4,12 +4,16 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -17,7 +21,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.blackcat.health_0_meter.Models.Steps;
@@ -37,6 +45,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -112,6 +124,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         super.onViewCreated(view, savedInstanceState);
 
         //Initialize views
+
         dayRecordText = (TextView) view.findViewById(R.id.dayRecordText);
         stepText = (TextView) view.findViewById(R.id.stepText);
         timeText = (TextView) view.findViewById(R.id.timeText);
@@ -292,7 +305,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
     }
 
-    private boolean     checkSensors(){
+    private boolean  checkSensors(){
 
         if( stepCounter != null ){
             notices.setText(" Step Counter Sensor available . ");
@@ -328,11 +341,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         if(stepCount+lastSteps > dayStepRecord && user.getBoolean(tp+"_step",true))
         {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-            builder1.setTitle("Congratulations");
-            builder1.setMessage("Goal Achieved");
-            AlertDialog alertDialog=builder1.create();
-            alertDialog.show();
+            showPopUp();
             user.edit().putBoolean(tp+"_step",false).apply();
         }
 
@@ -485,6 +494,96 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         }
     }
 
+    private void showPopUp(){
+
+        final Dialog goalDialog = new Dialog(getContext());
+
+        goalDialog.setContentView(R.layout.dialog_congrats);
+        TextView goalText = goalDialog.findViewById(R.id.goalSteps);
+        goalText.setText(dayStepRecord + "");
+        ImageView closePopUp = (ImageView)goalDialog.findViewById(R.id.closePopUp);
+        Button sharebtn = (Button)goalDialog.findViewById(R.id.sharebutton);
+
+        closePopUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goalDialog.dismiss();
+            }
+        });
+
+        sharebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LinearLayout screenshotLayout = goalDialog.findViewById(R.id.screenshotlayout);
+                Bitmap bitmap = takeScreenShot(screenshotLayout);
+                File imagePath = saveScreenshot(bitmap);
+                if(imagePath != null){
+                    shareIt(1 , imagePath , dayStepRecord);
+                }else{
+                    shareIt(2 , null ,dayStepRecord);
+                }
+
+            }
+        });
+        Window window = goalDialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        goalDialog.show();
+    }
+
+    private void shareIt(int s, File imagePath,int dayStepRecord){
+
+        switch (s){
+
+            case 1 : Uri uri = FileProvider.getUriForFile(getActivity(),"com.blackcat.fileprovider",imagePath);
+                    getActivity().grantUriPermission(getActivity().getPackageName(),uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("image/*");
+                    String sharebody = "Hey , I just acheived my goal of walking "+dayStepRecord+" steps .\n Join me on Swasthya app to stay fit and healthy .Let's be health competitors ! \n  See you on the Swasthya ground !";
+                    String shareSubject  = "Goal Reached !! ";
+                    intent.putExtra(Intent.EXTRA_SUBJECT,shareSubject);
+                    intent.putExtra(Intent.EXTRA_TEXT,sharebody);
+                    intent.putExtra(Intent.EXTRA_STREAM,uri);
+                    intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getActivity().startActivity(Intent.createChooser(intent,"Share via "));
+                    break;
+            default: Intent myIntent= new Intent(Intent.ACTION_SEND);
+                    myIntent.setType("text/plain");
+                    String shareBody = "Hey , I just acheived my goal of walking "+dayStepRecord+" steps .\n Join me on Swasthya app to stay fit and healthy .Let's be health competitors ! \n See you on the Swasthya ground !";
+                    String shareSub = "Goal Reached !! ";
+                    myIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+                    myIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                    startActivity(Intent.createChooser(myIntent, "Share via "));
+
+        }
+    }
+    private Bitmap takeScreenShot(LinearLayout ss){
+        ss.setDrawingCacheEnabled(true);
+        return ss.getDrawingCache();
+    }
+
+    private File saveScreenshot(Bitmap ss){
+        File directory = new File(getActivity().getFilesDir() + "/goalReached");
+        if(!directory.exists())
+            if(!directory.mkdir())
+                Toast.makeText(getActivity(),"Error while creating directory",Toast.LENGTH_SHORT).show();
+        File imagePath = new File(getActivity().getFilesDir() + "/goalReached/screenshot.jpg");
+        FileOutputStream fos ;
+        try{
+            fos = new FileOutputStream(imagePath);
+            ss.compress(Bitmap.CompressFormat.JPEG,100,fos);
+            fos.flush();
+            fos.close();
+            return imagePath;
+        }catch (FileNotFoundException e){
+            Log.e("FNFE",e.getMessage(),e);
+        }catch (IOException e){
+            Log.e("IOE",e.getMessage(),e);
+        }
+
+        return  null;
+    }
+
     public void showDialog()
     {
         final Dialog d = new Dialog(getActivity());
@@ -510,9 +609,11 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         {
             @Override
             public void onClick(View v) {
+                final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
                 dayStepRecord  = Integer.parseInt(displayedValues[np.getValue() - 2]);
                 dayRecordText.setText(String.format(getResources().getString(R.string.record), dayStepRecord));
                 user.edit().putString("DAY_STEP_RECORD",displayedValues[np.getValue() - 2]).apply();
+                user.edit().putBoolean(tp + "_step",true).apply();
                 d.dismiss();
             }
         });
