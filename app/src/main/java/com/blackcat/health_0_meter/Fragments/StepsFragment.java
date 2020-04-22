@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,7 +79,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     private TextView speedText1;
     private TextView notices ;
     private Button startButton;
-
+    private TextView goalText;
     private boolean active = false;
     private Handler handler = new Handler();
 
@@ -86,6 +89,10 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     private FirebaseDatabase mdb;
     private DatabaseReference step_ref;
 
+    Dialog goalDialog;
+    Button sharebtn;
+    TextView goalMessage,goalStep;
+    ImageView closePopUp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,6 +131,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         orientationText = (TextView) view.findViewById(R.id.orientationText);
         notices = (TextView)view.findViewById(R.id.accuracy_alert);
         startButton = view.findViewById(R.id.startButton);
+        goalText = (TextView) view.findViewById(R.id.goalSteps);
         startButton.setEnabled(false);
         user = getActivity().getSharedPreferences("user",Context.MODE_PRIVATE);
 
@@ -150,7 +158,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
                     if (!active) {
                         startButton.setText("Stop");
                         registerSensors();
-                        notices.setText(" The sensor has a Latency of 10 seconds . ");
+                        notices.setText("@string/latency");
                         startTime = SystemClock.uptimeMillis();
                         handler.postDelayed(timerRunnable, 0);
                         active = true;
@@ -292,7 +300,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
     }
 
-    private boolean     checkSensors(){
+    private boolean checkSensors(){
 
         if( stepCounter != null ){
             notices.setText(" Step Counter Sensor available . ");
@@ -322,17 +330,19 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     }
     //Calculates the number of steps and the other calculations related to them
     private void countSteps(int step) {
-
         //Step count
         stepCount += step;
         final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         if(stepCount+lastSteps > dayStepRecord && user.getBoolean(tp+"_step",true))
         {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-            builder1.setTitle("Congratulations");
-            builder1.setMessage("Goal Achieved");
-            AlertDialog alertDialog=builder1.create();
-            alertDialog.show();
+            //AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+            goalDialog = new Dialog(getContext());
+            showPopUp();
+
+            //builder1.setTitle("Congratulations");
+            //builder1.setMessage("Goal Achieved");
+            //AlertDialog alertDialog=builder1.create();
+            //alertDialog.show();
             user.edit().putBoolean(tp+"_step",false).apply();
         }
 
@@ -346,6 +356,36 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
     }
 
+    private void showPopUp(){
+        goalDialog.setContentView(R.layout.dialog_congrats);
+        goalText.setText(dayStepRecord);
+        closePopUp = (ImageView)goalDialog.findViewById(R.id.closePopUp);
+        sharebtn = (Button)goalDialog.findViewById(R.id.sharebutton);
+
+        closePopUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goalDialog.dismiss();
+            }
+        });
+
+        sharebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent= new Intent(Intent.ACTION_SEND);
+                myIntent.setType("text/plain");
+                String shareBody = "Hey , I just acheived my goal of walking "+dayStepRecord+" steps .\n Join me on Swasthya app to stay fit and healthy .Let's be health competitors ! See you on the Swasthya ground !";
+                String shareSub = "Goal Reached !! ";
+                myIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+                myIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                startActivity(Intent.createChooser(myIntent, "Share with"));
+
+            }
+        });
+
+        goalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        goalDialog.show();
+    }
     //Calculated the amount of steps taken per minute at the current rate
     private void calculateSpeed(long eventTimeStamp, int steps) {
 

@@ -18,4 +18,5 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="instructions">Place your finger gently on the back of the camera overlapping the flashlight .\n\n DO NOT PRESS , It might break the blood flow . \n\n Try to keep the finger still as possible . \n\n Press START to start monitoring .</string>
+    <string name="latency">The sensor has a Latency of 10 seconds . </string>
 </resources>
