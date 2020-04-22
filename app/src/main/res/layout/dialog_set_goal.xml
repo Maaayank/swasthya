@@ -2,7 +2,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/bg"
+    android:background="@color/color2"
     android:padding="3dp">
 
     <LinearLayout
@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="5dp"
-        android:background="@color/ecolor2">
+        android:background="@color/bg">
 
         <NumberPicker
             android:id="@+id/numberPicker"
@@ -32,16 +32,18 @@
                 android:layout_below="@+id/numberPicker"
                 android:layout_toRightOf="@+id/numberPicker"
                 android:layout_marginRight="10dp"
-                android:background="@color/color3"
-                android:textColor="@color/color1"
+                android:background="#00000000"
+                android:textStyle="bold"
+                android:textColor="@color/color2"
                 android:text="Cancel" />
 
             <Button
                 android:id="@+id/button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/color3"
-                android:textColor="@color/color1"
+                android:background="#00000000"
+                android:textStyle="bold"
+                android:textColor="@color/color2"
                 android:text="Set" />
 
         </LinearLayout>

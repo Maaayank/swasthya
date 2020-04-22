@@ -35,7 +35,7 @@ public class RecordsHeartAdapter extends RecyclerView.Adapter<RecordsHeartAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position)
     {
         Heart ld=heart_arr.get(position);
-        holder.rate.setText(ld.getRate()+"");
+        holder.rate.setText(ld.getRate()+" bpm");
         holder.timestamp.setText(ld.getTimestamp()+"");
         holder.date.setText(ld.getDate() + "");
     }

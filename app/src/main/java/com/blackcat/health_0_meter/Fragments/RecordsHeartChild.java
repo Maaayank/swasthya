@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RecordsHeartChild extends Fragment
 {
@@ -81,6 +82,7 @@ public class RecordsHeartChild extends Fragment
                                         list.add(heart);
                                     }
 
+                                    Collections.reverse(list);
                                     adapter = new RecordsHeartAdapter(list);
                                     recyclerView.setAdapter(adapter);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

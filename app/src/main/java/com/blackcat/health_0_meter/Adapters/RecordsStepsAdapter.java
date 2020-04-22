@@ -47,7 +47,7 @@ public class RecordsStepsAdapter extends RecyclerView.Adapter<RecordsStepsAdapte
 
 
         holder.steps.setText(ld.getSteps()+"");
-        holder.distance.setText(ld.getDistance()+"");
+        holder.distance.setText(String.format("%.2f",ld.getDistance()) + " m");
         holder.date.setText(ld.getDate() + "");
         holder.duration.setText(timeString);
 

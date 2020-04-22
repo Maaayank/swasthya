@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardElevation="10dp"
-    app:cardBackgroundColor="@color/color3"
+    app:cardBackgroundColor="@color/color2"
     app:cardCornerRadius="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -13,90 +13,84 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="10dp"
-        android:layout_marginBottom="2dp"
-        >
+        android:layout_margin="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginBottom="3dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
             >
-
-            <!-- Title, secondary and supporting text -->
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/red_icon"
-                />
-            <!-- Title, secondary and supporting text -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date : "
-                android:textSize="@dimen/font_size"
-                android:textColor="@color/color1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size"
-                android:id="@+id/datetwo"
-                android:text="replaced by date"
-                android:textColor="@color/color1"
-                />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time : "
-                android:textSize="@dimen/font_size"
-                android:textColor="@color/color1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size"
-                android:id="@+id/timestamp"
-                android:text="replaced by steps"
-                android:textColor="@color/color1"
-                />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Date : "
+            android:drawableLeft="@drawable/date"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:textColor="@color/color1"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size"
+            android:id="@+id/datetwo"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="replaced by date"
+            android:textColor="@color/color1"
+            />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
             >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="HeartRate : "
-                android:textSize="@dimen/font_size"
-                android:textColor="@color/color1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/font_size"
-                android:text="Replaced by heartrate"
-                android:id="@+id/rate"
-                android:textColor="@color/color1"
-                />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Time : "
+            android:drawableLeft="@drawable/time"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:textColor="@color/color1"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size"
+            android:id="@+id/timestamp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="replaced by steps"
+            android:textColor="@color/color1"
+            />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" HeartRate : "
+            android:drawableLeft="@drawable/heartbeat"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:textColor="@color/color1"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size"
+            android:text="Replaced by heartrate"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:id="@+id/rate"
+            android:textColor="@color/color1"
+            />
         </LinearLayout>
-        <!-- Buttons -->
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

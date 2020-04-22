@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RecordStepChild extends Fragment
 {
@@ -78,6 +79,8 @@ public class RecordStepChild extends Fragment
 
                         averageSteps = averageSteps / list.size();
                         user.edit().putFloat("averageSteps", averageSteps).apply();
+
+                        Collections.reverse(list);
                         adapter = new RecordsStepsAdapter(list);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

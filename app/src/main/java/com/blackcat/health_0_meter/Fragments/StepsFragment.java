@@ -154,8 +154,8 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
                         startTime = SystemClock.uptimeMillis();
                         handler.postDelayed(timerRunnable, 0);
                         active = true;
-                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.color1));
-                        startButton.setTextColor(ContextCompat.getColor(getActivity(),R.color.color2));
+                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.color3));
+                        startButton.setTextColor(ContextCompat.getColor(getActivity(),R.color.color1));
                     } else {
                         startButton.setText("Start!");
                         startButton.setEnabled(false);
@@ -292,7 +292,7 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
     }
 
-    private boolean checkSensors(){
+    private boolean     checkSensors(){
 
         if( stepCounter != null ){
             notices.setText(" Step Counter Sensor available . ");
