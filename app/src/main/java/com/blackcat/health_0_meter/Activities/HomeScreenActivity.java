@@ -8,7 +8,9 @@ import com.blackcat.health_0_meter.Fragments.HeartRateFragment;
 import com.blackcat.health_0_meter.Fragments.ProfileFragment;
 import com.blackcat.health_0_meter.Fragments.RecordsFragment;
 import com.blackcat.health_0_meter.Fragments.StepsFragment;
+import com.blackcat.health_0_meter.HelperClasses.Constants;
 import com.blackcat.health_0_meter.R;
+import com.blackcat.health_0_meter.Services.StepService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -74,8 +76,18 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        Intent startIntent = new Intent(this, StepService.class);
+        startIntent.setAction(Constants.START_FOREGROUND);
+        startService(startIntent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent stopIntent = new Intent(this, StepService.class);
+        stopIntent.setAction(Constants.STOP_FOREGROUND);
+        startService(stopIntent);
+    }
 
     private void showFragment(Fragment frag){
         FragmentManager manager = getSupportFragmentManager();
@@ -83,5 +95,4 @@ public class HomeScreenActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.nav_host_fragment,frag).commit();
         manager.executePendingTransactions();
     }
-
 }

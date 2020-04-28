@@ -6,7 +6,7 @@
     <string name="speed">Average speed: %1$d steps/min</string>
     <string name="distance">Distance: %1$s m</string>
     <string name="orientation">Orientation: %1$s</string>
-    <string name="record">Day record: %1$d steps</string>
+    <string name="record">Today\'s Goal: %1$d steps</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

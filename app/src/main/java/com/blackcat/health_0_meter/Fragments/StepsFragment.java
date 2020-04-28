@@ -2,9 +2,11 @@ package com.blackcat.health_0_meter.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -16,6 +18,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ import androidx.fragment.app.Fragment;
 
 import com.blackcat.health_0_meter.Models.Steps;
 import com.blackcat.health_0_meter.R;
+import com.blackcat.health_0_meter.Services.StepService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -51,29 +55,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
-public class StepsFragment extends Fragment implements SensorEventListener , NumberPicker.OnValueChangeListener{
-
-    //Sensor related variables
-    private SensorManager sensorManager;
-    private Sensor stepDetectorSensor;
-    private Sensor accelerometer;
-    private Sensor magnetometer;
-    private Sensor stepCounter;
-    private float[] accelValues;
-    private float[] magnetValues;
-
-    //Variables used in calculations
-    private int stepCount = 0;
-    private int lastSteps = 0;
-    private double lastDistance = 0;
-    private int prevStepCount = 0;
-    private long stepTimestamp = 0;
-    private long startTime = 0;
-    long timeInMilliseconds = 0;
-    long elapsedTime = 0;
-    long updatedTime = 0;
-    private double distance = 0;
+public class StepsFragment extends Fragment implements NumberPicker.OnValueChangeListener{
 
     //Activity Views
     private TextView dayRecordText;
@@ -82,14 +66,9 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     private TextView orientationText;
     private TextView distanceText;
     private TextView speedText;
-    private TextView stepText1;
-    private TextView timeText1;
-    private TextView distanceText1;
-    private TextView speedText1;
     private TextView notices ;
     private Button startButton;
 
-    private boolean active = false;
     private Handler handler = new Handler();
 
     private SharedPreferences user;
@@ -98,17 +77,16 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     private FirebaseDatabase mdb;
     private DatabaseReference step_ref;
 
+    private StepService service = null;
+    private final String todayDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+    private boolean isBound ;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
+        user = getActivity().getSharedPreferences("user",Context.MODE_PRIVATE);
+        mdb = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -118,29 +96,20 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         return root;
     }
 
-
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //Initialize views
-
         dayRecordText = (TextView) view.findViewById(R.id.dayRecordText);
         stepText = (TextView) view.findViewById(R.id.stepText);
         timeText = (TextView) view.findViewById(R.id.timeText);
         speedText = (TextView) view.findViewById(R.id.speedText);
         distanceText = (TextView) view.findViewById(R.id.distanceText);
-        stepText1 = (TextView) view.findViewById(R.id.stepText1);
-        timeText1 = (TextView) view.findViewById(R.id.timeText1);
-        speedText1 = (TextView) view.findViewById(R.id.speedText1);
-        distanceText1 = (TextView) view.findViewById(R.id.distanceText1);
         orientationText = (TextView) view.findViewById(R.id.orientationText);
         notices = (TextView)view.findViewById(R.id.accuracy_alert);
         startButton = view.findViewById(R.id.startButton);
-        startButton.setEnabled(false);
-        user = getActivity().getSharedPreferences("user",Context.MODE_PRIVATE);
 
-        mdb = FirebaseDatabase.getInstance();
         try{
             String address = user.getString("address","");
             step_ref = mdb.getReference(address).child("stepstat");
@@ -149,37 +118,32 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
 
         }
 
-        setViewDefaultValues();
-
         if(!checkSensors())
             startButton.setEnabled(false);
 
-        //Step counting and other calculations start when user presses "start" button
 
+        //Step counting and other calculations start when user presses "start" button
         if (startButton != null) {
             startButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!active) {
+
+                    if(!isBound){
+                        Snackbar.make(view,"Binding to the Step Counting Service , wait ... ",Snackbar.LENGTH_LONG).show();
+                    }
+                    else if (!service.isActive()) {
                         startButton.setText("Stop");
-                        registerSensors();
                         notices.setText(" The sensor has a Latency of 10 seconds . ");
-                        startTime = SystemClock.uptimeMillis();
-                        handler.postDelayed(timerRunnable, 0);
-                        active = true;
+                        service.startForegroundService();
                         startButton.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.color3));
                         startButton.setTextColor(ContextCompat.getColor(getActivity(),R.color.color1));
+
                     } else {
                         startButton.setText("Start!");
-                        startButton.setEnabled(false);
+                        service.stopForegroundService(true);
                         startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color2));
                         startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color1));
-                        unregisterSensors();
                         checkSensors();
-                        elapsedTime += timeInMilliseconds;
-                        persistSteps();
-                        handler.removeCallbacks(timerRunnable);
-                        active = false;
                     }
                 }
             });
@@ -199,113 +163,61 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stepCount = 0;
-                distance = 0;
-                elapsedTime = 0;
-                startTime = 0;
+
                 startButton.setText("Start!");
-                unregisterSensors();
+                service.stopForegroundService(false);
                 checkSensors();
                 handler.removeCallbacks(timerRunnable);
-                active = false;
-                setViewDefaultValues();
+
             }
         });
     }
 
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBound = false;
+        }
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder_service) {
+            StepService.MyBinder myBinder = (StepService.MyBinder) binder_service;
+            service = myBinder.getService();
+            isBound = true;
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
-        dayStepRecord = Integer.parseInt(user.getString("DAY_STEP_RECORD", "3000"));
+        dayStepRecord = Integer.parseInt(user.getString("DAY_STEP_RECORD", "2000"));
         dayRecordText.setText(String.format(getResources().getString(R.string.record), dayStepRecord));
+
+        Intent intent = new Intent(getActivity(), StepService.class);
+        getActivity().bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        handler.postDelayed(timerRunnable, 0);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //Unregister for all sensors
-        sensorManager.unregisterListener(this, accelerometer);
-        sensorManager.unregisterListener(this, magnetometer);
-        sensorManager.unregisterListener(this, stepDetectorSensor);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-        //Get sensor values
-        switch (event.sensor.getType()) {
-            case (Sensor.TYPE_ACCELEROMETER):
-                accelValues = event.values;
-                break;
-            case (Sensor.TYPE_MAGNETIC_FIELD):
-                magnetValues = event.values;
-                break;
-            case (Sensor.TYPE_STEP_COUNTER) :
-                if(prevStepCount < 1){
-                    prevStepCount = (int)event.values[0];
-                }
-                calculateSpeed(event.timestamp,(int)event.values[0] - prevStepCount - stepCount);
-                countSteps((int)event.values[0] - prevStepCount - stepCount);
-                break;
-            case (Sensor.TYPE_STEP_DETECTOR):
-                if(stepCounter == null ) {
-                    countSteps((int)event.values[0]);
-                    calculateSpeed(event.timestamp,1);
-                }
-                    break;
-        }
-
-        if (accelValues != null && magnetValues != null) {
-            float rotation[] = new float[9];
-            float orientation[] = new float[3];
-            if (SensorManager.getRotationMatrix(rotation, null, accelValues, magnetValues)) {
-                SensorManager.getOrientation(rotation, orientation);
-                float azimuthDegree = (float) (Math.toDegrees(orientation[0]) + 360) % 360;
-                float orientationDegree = Math.round(azimuthDegree);
-                getOrientation(orientationDegree);
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-
-    private void registerSensors(){
-
-        if(stepDetectorSensor != null)
-            sensorManager.registerListener(StepsFragment.this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST);
-
-        if(accelerometer != null)
-            sensorManager.registerListener(StepsFragment.this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-
-        if(magnetometer != null)
-            sensorManager.registerListener(StepsFragment.this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
-
-        if(stepCounter != null)
-            sensorManager.registerListener(StepsFragment.this, stepCounter, SensorManager.SENSOR_DELAY_FASTEST);
-
-    }
-
-    private void unregisterSensors(){
-
-        if(stepDetectorSensor != null)
-            sensorManager.unregisterListener(StepsFragment.this, stepDetectorSensor);
-
-        if(accelerometer != null)
-            sensorManager.unregisterListener(StepsFragment.this, accelerometer);
-
-        if(magnetometer != null)
-            sensorManager.unregisterListener(StepsFragment.this, magnetometer);
-
-        if(stepCounter != null)
-            sensorManager.unregisterListener(StepsFragment.this , stepCounter);
-
+        getActivity().unbindService(mServiceConnection);
+        handler.removeCallbacks(timerRunnable);
     }
 
     private boolean  checkSensors(){
+
+        SensorManager sensorManager;
+        Sensor stepDetectorSensor;
+        Sensor accelerometer;
+        Sensor magnetometer;
+        Sensor stepCounter;
+
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         if( stepCounter != null ){
             notices.setText(" Step Counter Sensor available . ");
@@ -333,169 +245,47 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
             return false;
         }
     }
-    //Calculates the number of steps and the other calculations related to them
-    private void countSteps(int step) {
-
-        //Step count
-        stepCount += step;
-        final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        if(stepCount+lastSteps > dayStepRecord && user.getBoolean(tp+"_step",true))
-        {
-            showPopUp();
-            user.edit().putBoolean(tp+"_step",false).apply();
-        }
-
-
-        stepText.setText(String.format(getResources().getString(R.string.steps), lastSteps + stepCount));
-
-        //Distance calculation
-        distance = stepCount * 0.8; //Average step length in an average adult
-        String distanceString = String.format("%.2f",lastDistance + distance);
-        distanceText.setText(String.format(getResources().getString(R.string.distance), distanceString));
-
-    }
-
-    //Calculated the amount of steps taken per minute at the current rate
-    private void calculateSpeed(long eventTimeStamp, int steps) {
-
-        long timestampDifference = eventTimeStamp - stepTimestamp;
-        stepTimestamp = eventTimeStamp;
-        double stepTime = timestampDifference /1000000000.0;
-        int speed = (int) (60 / stepTime);
-        speedText.setText(String.format(getResources().getString(R.string.speed),speed*steps));
-    }
-
-    //Show cardinal point (compass orientation) according to degree
-    private void getOrientation(float orientationDegree) {
-        String compassOrientation;
-        if (orientationDegree >= 0 && orientationDegree < 90) {
-            compassOrientation = "North";
-        } else if (orientationDegree >= 90 && orientationDegree < 180) {
-            compassOrientation = "East";
-        } else if (orientationDegree >= 180 && orientationDegree < 270) {
-            compassOrientation = "South";
-        } else {
-            compassOrientation = "West";
-        }
-        orientationText.setText(String.format(getResources().getString(R.string.orientation), compassOrientation));
-    }
 
     //Runnable that calculates the elapsed time since the user presses the "start" button
     private Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            HashMap<String,String> data ;
 
-            updatedTime = elapsedTime + timeInMilliseconds;
+            if(isBound){
 
-            int seconds = (int) (updatedTime / 1000);
-            int minutes = seconds / 60;
-            int hours = minutes / 60;
-            seconds = seconds % 60;
-            minutes = minutes % 60;
+                if(isAdded()) {
+                    data = service.getData();
 
-            String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
+                    stepText.setText(data.get("steps"));
+                    timeText.setText(data.get("duration"));
+                    speedText.setText(data.get("speed"));
+                    distanceText.setText(data.get("distance"));
+                    orientationText.setText(data.get("orientation"));
 
-            if (isAdded()) {
-                timeText.setText(String.format(getResources().getString(R.string.time), timeString));
+                    if(service.isActive()){
+                        startButton.setText("Stop");
+                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.color3));
+                        startButton.setTextColor(ContextCompat.getColor(getActivity(),R.color.color1));
+                    }else {
+                        startButton.setText("Start!");
+                        startButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color2));
+                        startButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.color1));
+                    }
+
+                }
+
+                if(service.getStepCount() >= dayStepRecord && user.getBoolean(todayDate + "_step",true)){
+                    showPopUp();
+                }
             }
-            handler.postDelayed(this, 0);
+            handler.postDelayed(this, 1000);
         }
     };
 
-    //Set all views to their initial value
-    private void setViewDefaultValues() {
-
-
-        final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-
-        try {
-            step_ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    try {
-                        if (dataSnapshot.child(timestamp).exists()) {
-                            startButton.setEnabled(true);
-                            Steps stepstat = dataSnapshot.child(timestamp).getValue(Steps.class);
-
-                            lastDistance = stepstat.getDistance();
-                            elapsedTime = stepstat.getDuration();
-                            lastSteps = (int) stepstat.getSteps();
-                            stepCount = 0;
-                            distance = 0;
-                            startTime = 0;
-                            int seconds = (int) (stepstat.getDuration() / 1000);
-                            int minutes = seconds / 60;
-                            int hours = minutes / 60;
-                            seconds = seconds % 60;
-                            minutes = minutes % 60;
-
-                            String timeString = String.format("%d:%s:%s", hours, String.format("%02d", minutes), String.format("%02d", seconds));
-                            stepText1.setText(String.format(getResources().getString(R.string.steps1), stepstat.getSteps()));
-                            timeText1.setText(String.format(getResources().getString(R.string.time), timeString));
-                            speedText1.setText(String.format(getResources().getString(R.string.speed), (int) ((stepstat.getDistance() * 60000) / stepstat.getDuration())));
-                            distanceText1.setText(String.format(getResources().getString(R.string.distance), String.format("%.2f", stepstat.getDistance())));
-
-                            stepText.setText(String.format(getResources().getString(R.string.steps), 0));
-                            timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-                            speedText.setText(String.format(getResources().getString(R.string.speed), 0));
-                            distanceText.setText(String.format(getResources().getString(R.string.distance), "0"));
-                            orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
-
-                            Log.d("healtherror", "responsed");
-
-                        } else {
-                            startButton.setEnabled(true);
-                            Log.d("healtherror", "inelse");
-                            elapsedTime = 0;
-                            lastSteps = 0;
-                            stepText1.setText(String.format(getResources().getString(R.string.steps1), 0));
-                            timeText1.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-                            speedText1.setText(String.format(getResources().getString(R.string.speed), 0));
-                            distanceText1.setText(String.format(getResources().getString(R.string.distance), "0"));
-
-                            stepText.setText(String.format(getResources().getString(R.string.steps), 0));
-                            timeText.setText(String.format(getResources().getString(R.string.time), "0:00:00"));
-                            speedText.setText(String.format(getResources().getString(R.string.speed), 0));
-                            distanceText.setText(String.format(getResources().getString(R.string.distance), "0"));
-                            orientationText.setText(String.format(getResources().getString(R.string.orientation), ""));
-                        }
-                    }catch(Exception e){
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d("healtherror", databaseError.getMessage());
-                    Toast.makeText(getActivity(), "Some Error in fetching Previous Records ", Toast.LENGTH_LONG).show();
-                }
-            });
-        }catch (Exception e){
-
-        }
-
-    }
-
-    private void persistSteps(){
-
-        try {
-            final String timestamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-            Steps steps = new Steps(stepCount + lastSteps, elapsedTime, (stepCount + lastSteps) * 0.8, timestamp);
-            step_ref.child(timestamp).setValue(steps).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("healtherror", e.getMessage());
-                }
-            });
-        }catch (Exception e){
-
-        }
-    }
-
     private void showPopUp(){
 
+        user.edit().putBoolean(todayDate + "_step",false).apply();
         final Dialog goalDialog = new Dialog(getContext());
 
         goalDialog.setContentView(R.layout.dialog_congrats);
@@ -609,11 +399,10 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
         {
             @Override
             public void onClick(View v) {
-                final String tp=new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
                 dayStepRecord  = Integer.parseInt(displayedValues[np.getValue() - 2]);
                 dayRecordText.setText(String.format(getResources().getString(R.string.record), dayStepRecord));
                 user.edit().putString("DAY_STEP_RECORD",displayedValues[np.getValue() - 2]).apply();
-                user.edit().putBoolean(tp + "_step",true).apply();
+                user.edit().putBoolean(todayDate + "_step",true).apply();
                 d.dismiss();
             }
         });
@@ -632,4 +421,5 @@ public class StepsFragment extends Fragment implements SensorEventListener , Num
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
     }
+
 }
