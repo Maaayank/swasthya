@@ -3,10 +3,13 @@ package com.blackcat.health_0_meter.Services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,6 +24,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import com.blackcat.health_0_meter.Activities.HomeScreenActivity;
 import com.blackcat.health_0_meter.HelperClasses.Constants;
 import com.blackcat.health_0_meter.Models.Steps;
 import com.blackcat.health_0_meter.R;
@@ -71,7 +76,6 @@ public class StepService extends Service implements SensorEventListener {
     private Handler handler = new Handler();
     String CHANNEL_ID = "swasthya";
     int notification_id = 1711101;
-    String title = "SWASTHYA : Step Counter ";
     String TAG = "service_error";
 
     private  IBinder mBinder = new MyBinder();
@@ -118,6 +122,13 @@ public class StepService extends Service implements SensorEventListener {
             case Constants.START_FOREGROUND :
                 Log.d(TAG,"starting service");
                 break;
+
+            case Constants.RESET_COUNT :
+                resetCount();
+                break;
+
+            case Constants.STOP_SAVE_COUNT :
+                stopForegroundService(true);
 
             case Constants.STOP_FOREGROUND :
                 Log.d(TAG,"stopping service");
@@ -200,8 +211,9 @@ public class StepService extends Service implements SensorEventListener {
 
     public void startForegroundService(){
         registerSensors();
-        startTime = SystemClock.uptimeMillis();
-        handler.postDelayed(timerRunnable,0);
+        startTime = SystemClock.uptimeMillis() + 1000;
+        startForeground(notification_id,getNotification("Starting Step Counter Service",""));
+        handler.postDelayed(timerRunnable,1000);
         isActive = true;
     }
 
@@ -209,15 +221,21 @@ public class StepService extends Service implements SensorEventListener {
         unregisterSensors();
         handler.removeCallbacks(timerRunnable);
         isActive = false;
+        startForeground(notification_id,getNotification("Stopping  Step Counter Service",""));
         stopForeground(true);
         elapsedTime = elapsedTime + timeInMilliseconds;
         if(persist)
             persistSteps();
     }
 
-    private void resetVariables(){
+    public void resetCount(){
         stepCount = 0;
         distance = 0;
+        startTime = SystemClock.uptimeMillis();
+        updatedTime = elapsedTime;
+    }
+
+    private void resetVariables(){
 
     }
 
@@ -340,11 +358,10 @@ public class StepService extends Service implements SensorEventListener {
         String title = "Step Counter ";
         HashMap<String,String> data = getData();
 
-        body +=  "steps: " + data.get("steps") + "\n";
-        body += data.get("distance") + "\n";
-        body += data.get("duration") + "\n";
+        body += data.get("distance") + "                ";
+        body += data.get("duration");
 
-        Notification notification = getNotification(title,body);
+        Notification notification = getNotification("STEPS TAKEN :  " + data.get("steps"),body);
 
         return notification;
     }
@@ -361,10 +378,26 @@ public class StepService extends Service implements SensorEventListener {
     }
 
     private Notification getNotification(String title, String body){
+
+        Intent resetIntent = new Intent(this,StepService.class);
+        resetIntent.setAction(Constants.RESET_COUNT);
+        PendingIntent resetPendingIntent = PendingIntent.getService(this,0,resetIntent,0);
+
+        Intent stopIntent = new Intent(this,StepService.class);
+        resetIntent.setAction(Constants.STOP_SAVE_COUNT);
+        PendingIntent stopPendingIntent = PendingIntent.getService(this,0,resetIntent,0);
+
+        Intent intent = new Intent(this, HomeScreenActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this,9,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID)
+                .setSmallIcon(R.drawable.logo)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.logo)
+                .setLargeIcon(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.logo),97,128,false))
+                .setContentIntent(resultPendingIntent)
+                .addAction(R.drawable.reset,"reset",resetPendingIntent)
+                .addAction(R.drawable.stop,"Stop",stopPendingIntent)
+                .setOngoing(true)
                 .build();
 
         return notification;

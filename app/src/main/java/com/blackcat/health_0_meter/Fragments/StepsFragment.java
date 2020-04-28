@@ -163,12 +163,8 @@ public class StepsFragment extends Fragment implements NumberPicker.OnValueChang
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startButton.setText("Start!");
-                service.stopForegroundService(false);
-                checkSensors();
-                handler.removeCallbacks(timerRunnable);
-
+                if(isBound && service.isActive())
+                    service.resetCount();
             }
         });
     }
