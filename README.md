@@ -46,13 +46,13 @@
 
 ### Future Scope :
 
-  - Solve the burning sensation on finger due to the heat from the flaslight  by adding flashlight intensity adjustment feature 
+  - [ ] Solve the burning sensation on finger due to the heat from the flaslight  by adding flashlight intensity adjustment feature 
   
-  - Adding Article fragment for health related articles
+  - [ ] Adding Article fragment for health related articles
   
-  - Finding relationship of steps per day  on bpm (beats per minute ) and add a feature encouraging walking .
+  - [ ] Finding relationship of steps per day  on bpm (beats per minute ) and add a feature encouraging walking .
   
-  - Show analysis of step walked and bpm .
+  - [ ] Show analysis of step walked and bpm .
 
 ----
 
